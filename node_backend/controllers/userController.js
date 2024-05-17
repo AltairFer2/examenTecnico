@@ -2,7 +2,8 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.registerUser = async (req, res) => {
+// Registrar usuario
+exports.register = async (req, res) => {
     const { name, email, rfc, password } = req.body;
     try {
         let user = await User.findOne({ email });
@@ -38,7 +39,8 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-exports.loginUser = async (req, res) => {
+// Iniciar sesión
+exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email });
@@ -68,10 +70,36 @@ exports.loginUser = async (req, res) => {
     }
 };
 
+// Obtener perfil de usuario
 exports.getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
         res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Error de Server');
+    }
+};
+
+// Actualizar perfil de usuario
+exports.updateUserProfile = async (req, res) => {
+    const { name, email } = req.body;
+    const updatedFields = { name, email };
+
+    try {
+        const user = await User.findByIdAndUpdate(req.user.id, { $set: updatedFields }, { new: true });
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Error de Server');
+    }
+};
+
+// Eliminar usuario
+exports.deleteUser = async (req, res) => {
+    try {
+        await User.findByIdAndRemove(req.params.id);
+        res.json({ msg: 'Usuario eliminado' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Error de Server');

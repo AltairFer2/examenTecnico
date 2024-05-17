@@ -12,5 +12,28 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    // Implementación del login
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.status(401).send('Usuario no encontrado');
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send('Contraseña incorrecta');
+        }
+
+        const token = jwt.sign({ id: user._id }, 'tu_secreto_jwt', { expiresIn: '1h' });
+
+        res.status(200).json({
+            message: "Login exitoso",
+            token: token
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error en el servidor');
+    }
 };
+

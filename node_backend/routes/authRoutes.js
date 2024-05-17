@@ -12,7 +12,7 @@ router.post(
         check('rfc', 'El RFC requiere 13 carácteres').isLength({ min: 13, max: 13 }),
         check('password', 'Por favor ingresa una contraseña de al menos 8 carácteres').isLength({ min: 8 })
     ],
-    authController.registerUser
+    authController.register
 );
 
 router.post(
@@ -21,7 +21,7 @@ router.post(
         check('email', 'Por favor, incluye un email válido').isEmail(),
         check('password', 'Por favor ingrese una contraseña').exists()
     ],
-    authController.loginUser
+    authController.login
 );
 
 module.exports = router;

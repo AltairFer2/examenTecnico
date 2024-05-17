@@ -12,7 +12,7 @@ router.post(
         check('email', 'Por favor, incluye un email válido').isEmail(),
         check('password', 'Por favor ingresa una contraseña de al menos 8 carácteres').isLength({ min: 8 })
     ],
-    userController.registerUser
+    userController.register
 );
 
 router.post(
@@ -21,7 +21,7 @@ router.post(
         check('email', 'Por favor, incluye un email válido').isEmail(),
         check('password', 'Por favor ingrese una contraseña').exists()
     ],
-    userController.loginUser
+    userController.login
 );
 
 router.get('/profile', authMiddleware, userController.getUserProfile);
