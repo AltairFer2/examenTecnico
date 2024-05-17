@@ -8,11 +8,13 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  
   String _name = '';
   String _email = '';
   String _rfc = '';
   String _password = '';
-  String _confirmPassword = '';
 
   void _register() async {
     if (_formKey.currentState!.validate()) {
@@ -65,6 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
+                controller: _passwordController,
                 onSaved: (value) => _password = value!,
                 validator: (value) =>
                     value!.isEmpty ? 'Este campo es obligatorio' : null,
@@ -72,10 +75,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: 'Confirmar contraseña'),
                 obscureText: true,
-                onSaved: (value) => _confirmPassword = value!,
+                controller: _confirmPasswordController,
                 validator: (value) {
                   if (value!.isEmpty) return 'Este campo es obligatorio';
-                  if (value != _password) return 'Las contraseñas no coinciden';
+                  if (value != _passwordController.text) return 'Las contraseñas no coinciden';
                   return null;
                 },
               ),

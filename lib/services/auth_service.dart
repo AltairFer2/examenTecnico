@@ -10,7 +10,7 @@ class AuthService {
     try {
       var response = await http.post(
         Uri.parse(
-            '$_baseUrl/login'), // Asegúrate de que esta ruta coincida con tu backend
+            '$_baseUrl/api/auth/login'), // Asegúrate de que esta ruta coincida con tu backend
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'email': email,
@@ -31,29 +31,26 @@ class AuthService {
   }
 
   // Método para registrarse
-  static Future<bool> register(
-      String name, String email, String rfc, String password) async {
-    try {
-      var response = await http.post(
-        Uri.parse(
-            '$_baseUrl/register'), // Asegúrate de que esta ruta coincida con tu backend
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'rfc': rfc,
-          'password': password,
-        }),
-      );
+  static Future<bool> register(String name, String email, String rfc, String password) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3000/api/auth/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'name': name,
+        'email': email,
+        'rfc': rfc,
+        'password': password,
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        // Aquí podrías manejar la respuesta después del registro, como iniciar sesión automáticamente
-        return true;
-      }
-      return false;
-    } catch (e) {
-      // Manejar excepciones
-      print(e);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 201) {
+      return true;
+    } else {
       return false;
     }
   }
